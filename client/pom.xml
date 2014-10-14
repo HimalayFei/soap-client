@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <groupId>bhcds.feisystems.soap-client</groupId>
+      <artifactId>soap-client</artifactId>
+      <version>1.0-SNAPSHOT</version>
+   </parent>
+   <artifactId>soap-client-client</artifactId>
+   <name>-- SOAP Client</name>
+   <packaging>bundle</packaging>
+
+   <dependencies>
+      <dependency>
+         <groupId>bhcds.feisystems.soap-client</groupId>
+         <artifactId>soap-client-service</artifactId>
+         <classifier>jaxws</classifier>
+         <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-context</artifactId>
+		   <version>${spring.version}</version>
+	  </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.3.2</version>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>exec</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <executable>java</executable>
+               <arguments>
+                  <argument>-classpath</argument>
+                  <classpath/>
+                  <argument>
+                     client.WSClient
+                  </argument>
+               </arguments>
+            </configuration>
+         </plugin>
+         
+         <plugin>
+             <groupId>org.apache.cxf</groupId>
+             <artifactId>cxf-codegen-plugin</artifactId>
+             <version>${cxf.version}</version>
+             <executions>
+                <execution>
+                   <goals>
+                      <goal>wsdl2java</goal>
+                   </goals>
+                   <configuration>
+                      <sourceRoot>${basedir}/target/generated-sources</sourceRoot>
+                      <wsdlOptions>
+                         <wsdlOption>
+                            <wsdl>
+                               ${basedir}/src/main/resources/RecommendationService.wsdl
+                            </wsdl>
+                            <wsdlLocation>classpath:RecommendationService.wsdl</wsdlLocation>
+                         </wsdlOption>
+                      </wsdlOptions>
+                   </configuration>
+                </execution>
+             </executions>
+          </plugin>
+          
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <configuration>
+               <instructions>
+                  <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                  <Export-Package>client</Export-Package>
+                  <Embed-Dependency>soap-client-service;classifier=jaxws</Embed-Dependency>
+               </instructions>
+            </configuration>
+         </plugin>
+         
+      </plugins>
+   </build>
+</project>
+
